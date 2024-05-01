@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html> 
+
+<head>
+  <title>Aarhus universitets ladestander</title>
+</head>
+
+<style>
+  body {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+.banner {
+    background-color: #012547; 
+    color: white; 
+    padding: 10px; 
+    text-align: center; 
+    width: 100%; 
+    height: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.banner img {
+    width: 200px; 
+    height: auto; 
+    margin-right: 10px;
+}
+
+.checkbox-label {
+    display: block;
+    margin-bottom: 15px; 
+}
+
+.checkbox {
+    transform: scale(3);
+    margin-right: 10px; 
+}
+
+.checkboxtext {
+    font-family: "aptos", sans-serif;
+    text-align: center;
+    font-size: 18px;
+}
+
+.tekst {
+    font-family: "aptos", sans-serif;
+    text-align: center;
+    font-size: 36px;
+}
+
+#NæsteKnap {
+    background-color: #012547; 
+    border: 2px solid #012547; 
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition-duration: 0.4s;
+    outline: none;
+}
+
+#NæsteKnap:hover {
+  background-color: white;
+  color: #012547; 
+}
+
+#TilbageKnap {
+  background-color: #012547; 
+  border: 2px solid #012547; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition-duration: 0.4s;
+  outline: none;
+}
+
+#TilbageKnap:hover {
+  background-color: white;
+  color: #012547; 
+}
+
+.top-left-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 280px; 
+            height: auto; 
+            margin: 10px; 
+            z-index: 999; 
+}
+  
+</style>
+
+<body onload="initMap()">
+
+  <img class="top-left-img" src="https://github.com/OskarSchwartz/BDD-23-hjemmeside-29-04/blob/main/aarhus-university.png?raw=true" alt="Logo"> 
+
+
+    <h1>Directions </h1>
+  
+    <div class="banner">
+        
+    </div>
+
+    <br> <br> <br> <br> <br>
+  
+    <p class="tekst"> Velkommen til Aarhus universitets nye <strong>ladestander! </strong> </h1>
+
+      <p class="tekst"> Indtast dine oplysninger for at starte: </a>
+
+        <br>
+        <br>
+        <label for="name"> Navn: </label>
+        <input type="text" id="name" placeholder="Indtast navn og efternavn:">
+        <br>
+        <br>
+        <label for="address"> Adresse: </label>
+        <!--Gør adressebaren længere, så den fulde adresse af et givet sted har plads til at stå der-->
+        <input type="text" id="address" placeholder="Indtast hjemmeadresse:">
+        
+        <br>
+        <br>
+        <button id="NæsteKnap">Næste</button>
+
+        
+  
+    <div id="map" class="map-container" style="height: 400px; display: none"></div> 
+  
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPxNNdJnsvqlJyGYlHunaCcWeL8V1cMEM&libraries=places"></script> 
+  
+  <script>
+    let map, directionsService, directionsRenderer 
+    let sourceAutocomplete, desAutocomplete 
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"),{
+        center:{lat:37, lng:-122},
+        zoom:13
+      } )
+      google.maps.event.addListener(map, "click", function (event) {
+        this.setOptions({scrollwheel:true})
+      })
+      directionsService = new google.maps.DirectionsService() 
+      directionsRenderer = new google.maps.DirectionsRenderer() 
+      directionsRenderer.setMap(map)
+  
+      desAutocomplete = new google.maps.places.Autocomplete( 
+        document.getElementById("address")
+      )
+  
+    }
+  
+    function storeInputValues(event) {
+            event.preventDefault(); 
+
+            var nameInput = document.getElementById('name').value.trim(); 
+            var addressInput = document.getElementById('address').value.trim(); 
+
+            
+            if (nameInput !== "" && addressInput !== "") {
+                var name = nameInput;
+                var address = addressInput;
+
+                console.log("Navn: " + name);
+                console.log("Adresse: " + address);
+
+                localStorage.setItem('name', name);
+                localStorage.setItem('address', address);
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var latitude = position.coords.latitude;
+                        var longitude = position.coords.longitude
+                        localStorage.setItem('latitude', latitude);
+                        localStorage.setItem('longitude', longitude);
+                        console.log("Latitude: " + latitude);
+                        console.log("Longitude: " + longitude);
+
+                        window.location.href = 'side2.html';
+                    });
+                } else {
+                    console.log("Geolocation is not supported by this browser.");
+                        window.location.href = 'side2.html';
+                }
+            } else {
+                alert("Venligst udfyld både navn og adresse for at fortsætte.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('NæsteKnap').addEventListener('click', storeInputValues);
+        });
+
+  </script>
+  
+  </body>
+  </html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Aarhus universitets ladestander</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPxNNdJnsvqlJyGYlHunaCcWeL8V1cMEM&libraries=places"></script>
+</head>
+
+<style>
+
+body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+        }
+
+
+.banner { 
+    background-color: #012547; 
+    color: white; 
+    padding: 10px; 
+    text-align: center; 
+    width: 100%; 
+    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.banner img {
+    width: 200px; 
+    height: auto; 
+    margin-right: 10px;
+    position: fixed
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px; /* Adjust as needed */
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Adjust as needed */
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 10px; /* Adjust as needed */
+}
+
+.tekst {
+            font-family: "aptos", sans-serif;
+            text-align: center;
+            font-size: 36px;
+        }
+
+#NæsteKnap {
+    background-color: #012547; 
+  border: 2px solid #012547; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition-duration: 0.4s;
+  outline: none;
+}
+
+#NæsteKnap:hover {
+    background-color: white;
+    color: #012547; 
+}
+
+#TilbageKnap {
+  background-color: #012547; 
+  border: 2px solid #012547; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition-duration: 0.4s;
+  outline: none;
+}
+
+#TilbageKnap:hover {
+  background-color: white;
+  color: #012547; 
+}
+
+.top-left-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 280px; 
+            height: auto; 
+            margin: 10px; 
+            z-index: 999; 
+}
+
+#popup-box {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: 2px solid #012547; 
+    border-radius: 10px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+  }
+
+  #popup-message {
+    font-size: 18px;
+    color: #333;
+  }
+
+</style>
+
+<body onload="initMap()">
+
+    <img class="top-left-img" src="https://github.com/OskarSchwartz/BDD-23-hjemmeside-29-04/blob/main/aarhus-university.png?raw=true" alt="Logo">
+    <div class="banner">
+        
+    </div>
+
+    <div id="popup-box">
+        <p id="popup-message">
+            <strong> Tak for din deltagelse i vores eksamensprojekt! <br> <br>
+            Vi er fire universitetsstuderende, der med denne ladestander forsøger at sætte fokus på de manglende lademuligheder for medarbejdere på Aarhus Universitets og udfordrer AU's holdning om, at deres medarbejdere “bare” kan lade deres elbiler andre steder end på arbejdspladsen. <br> I virkeligheden mener vi, at Aarhus Universitet bør tage et større ansvar for, at deres medarbejdere skal kunne lade på arbejdspladsen.
+            <br> <br> Er du enig? Så afkryds hvilken måde vi må give din mening til kende for Aarhus universitet.
+            </strong>
+        </p>
+        
+        <br>
+
+        <!--I må gerne bruge mit navn til en underskriftsindsamling-->
+        <div class="checkbox-label">
+            <input type="checkbox" class="checkbox" id="Underskrift" onclick="LavUnderskrift()">
+            <label for="Underskrift">I må gerne bruge mit navn til en underskriftsindsamling</label>
+        </div>
+        
+        <div class="checkbox-label">
+            <input type="checkbox" class="checkbox" id="Mail" onclick="SendMail()">
+            <label for="Mail">I må gerne sende en mail hvor jeg udtrykker min utilfredshed med AU's ladepolitik</label>
+        </div>
+        
+        
+        <br>
+
+        <input type="submit" value="Afslut" id="NæsteKnap" onclick="Afslut()">
+    </div>
+    
+
+    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <h1 class="text-center">Aarhus Universitet tilbyder i øjeblikket ikke ladning.</h1>
+    <h1 class="text-center" id="Navn"></h1>
+
+    
+        <!--gør at denne replik har en mindre skriftstørrelse <a href="https://medarbejdere.au.dk/baeredygtighed/groen-guide/transport"></a> guide til transport.</p>-->
+    <p id="tekst "style="font-size: 18;"> Såfremt det ikke er muligt, henviser vi til de førnævnte forslag til alternative lademuligheder eller AU's Grønne <a href="https://medarbejdere.au.dk/baeredygtighed/groen-guide/transport">guide til transport.</a></p>
+    
+
+    <br> <br>
+
+    <div class="container">
+        <div id="map" style="height:500px;width:100%"></div>
+    </div>
+
+<script> 
+    let map, directionsService, directionsRenderer;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: {lat: 37.7749, lng: -122.4194},
+            zoom: 5
+        });
+
+        google.maps.event.addListener(map, "click", function(event) {
+            this.setOptions({scrollwheel:true});
+        });
+
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        
+        calcRoute();
+    }
+
+    function calcRoute() {
+
+        let source = {
+            lat: parseFloat(localStorage.getItem("latitude")),
+            lng: parseFloat(localStorage.getItem("longitude"))
+        };
+
+        let destination = localStorage.getItem("address");
+
+        let request = {
+            origin: source,
+            destination: destination,
+            travelMode: "DRIVING",
+        };
+
+        directionsService.route(request, function(result, status) {
+            if(status === "OK") {
+                directionsRenderer.setDirections(result);
+            } else {
+                alert("Directions request failed: " + status);
+            }
+        });
+    }
+
+    let name = localStorage.getItem("name")
+
+    document.getElementById("Navn").textContent = "Men vi har gode nyheder til dig  " + name + ": Du kan bare lade derhjemme!"
+
+    function TilbageKnap() {
+        window.location.href = "side4.html";
+    }
+
+    function showPopup() {
+    document.getElementById('popup-box').style.display = 'block';
+  }
+
+    function Afslut() {
+        window.location.href = "index.html"
+    }
+
+  setTimeout(showPopup, 10000);
+
+</script>
+
+<br>
+
+<input type="submit" value="Tilbage" id="NæsteKnap" onclick="TilbageKnap()">
+
+<br> <br><br><br>
+
+</body>
+</html>
